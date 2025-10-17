@@ -12,12 +12,6 @@ def validar_respuesta_api_simple(
     1. El método HTTP de la petición.
     2. El código de estado de la respuesta.
     3. La existencia de una clave principal en el cuerpo JSON.
-
-    :param response: El objeto de respuesta de Playwright.
-    :param expected_method: El método HTTP esperado (ej. "POST").
-    :param expected_status: El código de estado esperado (ej. 201).
-    :param expected_key: La clave de relevancia que debe existir en el JSON (ej. "token").
-    :return: El cuerpo de la respuesta en formato de diccionario (JSON).
     """
     print(f"Validando API: Método='{expected_method}', Status='{expected_status}', Clave='{expected_key}'")
 

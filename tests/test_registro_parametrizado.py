@@ -58,19 +58,19 @@ casos = [
 def test_registro(page: Page, caso):
     """Test parametrizado: valida si el registro pasa o falla según los datos"""
     
-    # Email único para casos válidos, fijo para duplicado
+    # Email único para casos válidos
     if caso['desc'] == "Email duplicado":
         email = "ana.perez.test1234567890@mail.com"
     else:
         email = f"{caso['email_base']}.test{int(time.time())}@mail.com"
     
-    # Setup
+    # Configuración del test
     registro_page = RegistroPage(page)
     registro_page.navegar(BASE_URL)
     registro_page.llenar_formulario(caso['nombre'], caso['apellido'], email, caso['password'])
     registro_page.aceptar_terminos()
     
-    # Acción
+    # Accines y validaciones
     if caso['debe_pasar']:
         with page.expect_response(lambda r: "/students/register" in r.url):
             registro_page.hacer_click_crear_cuenta()

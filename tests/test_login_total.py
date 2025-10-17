@@ -10,6 +10,11 @@ from pages.dashboard_page import DashboardPage
 load_dotenv()
 BASE_URL = os.getenv('BASE_URL')        
 
+''' Test total de login usando page object model con metodos principales,  datos de entorno y validaciones de API
+    - test login exitoso
+    - test login fallido con email inválido
+    - test login fallido con password inválida'''
+
 with open('data/login.json', 'r', encoding='utf-8') as file:
     datos = json.load(file)
     usuario_valido = datos ['login_valido']['datos_validos']['email']

@@ -34,10 +34,10 @@ def test_registro_exitoso(page: Page):
     response = response_info.value
     assert response.status == 201
     
-    # PRIMERO: Validar redirección al dashboard
+    # Validar redirección al dashboard
     registro_page.verificar_redireccion_dashboard(BASE_URL)
     
-    # DESPUÉS: Validar token (ya está en el dashboard)
+    # Validar token (ya está en el dashboard)
     token = registro_page.obtener_token_localstorage()
     assert token is not None
     

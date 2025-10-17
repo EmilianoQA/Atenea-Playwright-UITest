@@ -7,7 +7,6 @@ class DashboardPage:
     def __init__(self, page: Page):
         self.page = page
 
-
 # Selectores
         self.saludo_usuario = page.get_by_text("Hola,")
         self.nivel_usuario   = page.get_by_text("Nivel")
@@ -19,11 +18,10 @@ class DashboardPage:
         self.link_desafios = page.get_by_role("link", name="Desafíos")
         self.link_mis_talleres = page.get_by_role("link", name="Mis Talleres")
 
-# Acciones
     def navegar(self, base_url):
         """Navega a la página de dashboard"""
         self.page.goto(f"{base_url}/dashboard") 
-# Validar elemntos visibles en el dashboard
+
     def verificar_elementos_dashboard(self):
         """Verifica que los elementos del dashboard estén visibles"""
         expect(self.saludo_usuario).to_be_visible()

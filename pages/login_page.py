@@ -12,11 +12,8 @@ class LoginPage:
         self.boton_ingresar = page.get_by_role("button", name="Ingresar")
         self.icono_usuario = page.get_by_role("button", name="account of current user")
         self.saludo_usuario = page.get_by_text("Hola,")
-        self.error_message_locator = page.locator(".MuiAlert-message.css-1xsto0d")  # Selector para el mensaje de error
+        self.error_message_locator = page.locator(".MuiAlert-message.css-1xsto0d")  
     
-
-    
-    # Acciones
     def navegar(self, base_url):
         """Navega a la página de login"""
         self.page.goto(f"{base_url}/login")

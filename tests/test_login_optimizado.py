@@ -9,7 +9,6 @@ from pages.login_page import LoginPage
 load_dotenv()
 BASE_URL = os.getenv('BASE_URL')
 
-
 '''Test optimizado para login usando page object y datos de entorno
     - test login exitoso
     - test login fallido con email inválido

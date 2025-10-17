@@ -7,7 +7,6 @@ class RegistroPage:
     def __init__(self, page: Page):
         self.page = page
         
-        # Selectores
         self.input_nombre = page.get_by_role("textbox", name="Nombre")
         self.input_apellido = page.get_by_role("textbox", name="Apellido")
         self.input_email = page.get_by_role("textbox", name="Correo electrónico")
@@ -19,8 +18,6 @@ class RegistroPage:
         self.icono_usuario = page.get_by_role("button", name="account of current user")
         self.saludo_usuario = page.get_by_text("Hola,")
 
-    
-    # Acciones
     def navegar(self, base_url):
         """Navega a la página de registro"""
         self.page.goto(f"{base_url}/signup")
@@ -41,7 +38,6 @@ class RegistroPage:
         """Hace clic en el botón Crear cuenta"""
         self.boton_crear_cuenta.click()
     
-    # Validaciones
     def verificar_redireccion_dashboard(self, base_url):
         """Verifica que redirigió al dashboard"""
         expect(self.page).to_have_url(f"{base_url}/dashboard")
@@ -52,8 +48,6 @@ class RegistroPage:
     
     def obtener_mensaje_error(self):
         """Obtiene el mensaje de error del formulario"""
-        # Intenta encontrar el mensaje de error
-        # Ajusta el selector según lo que veas en la consola
         error_element = self.page.locator(".error, .alert-danger, [role='alert']")
         if error_element.is_visible():
             return error_element.text_content()
@@ -63,7 +57,6 @@ class RegistroPage:
         """Verifica que el header muestra que el usuario está logueado"""
         expect(self.icono_usuario).to_be_visible()
         expect(self.saludo_usuario).to_be_visible()
-
 
     def registrar_nuevo_usuario(self, base_url, nombre, apellido, email, password):
         """Flujo completo para registrar un usuario"""
