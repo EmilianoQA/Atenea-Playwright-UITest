@@ -1,0 +1,22 @@
+{
+  "login_valido": {
+    "datos_validos": {
+        "email": "usuariouno@mail.com",
+        "contraseña": "usuario1",
+        "mensaje_esperado": "Dashboard"
+      }
+    }
+  ,
+  "login_invalidos": {
+    "email_invalido": {
+      "email": "usuariouno@mailcom",
+      "contraseña": "usuario1",
+      "mensaje_esperado": "Ingresá un correo electrónico válido."
+    },
+    "contraseña_invalida": {
+      "email": "usuariouno@mail.com",
+      "contraseña": "contraseña_incorrecta",
+      "mensaje_esperado": "Invalid credentials."
+    }
+  }
+}

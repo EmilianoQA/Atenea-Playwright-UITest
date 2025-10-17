@@ -1,0 +1,26 @@
+{
+  "usuarios_validos": [
+    {
+      "nombre": "Ana",
+      "apellido": "Pérez",
+      "email_base": "ana.perez",
+      "password": "Atenea123"
+    }
+  ],
+  "casos_invalidos": {
+    "password_corta": {
+      "nombre": "Test",
+      "apellido": "Invalid",
+      "email_base": "test.invalid",
+      "password": "123",
+      "error_esperado": "contraseña"
+    },
+    "email_duplicado": {
+      "nombre": "Duplicado",
+      "apellido": "Email",
+      "email_base": "ana.perez",
+      "password": "Test123456",
+      "error_esperado": "ya existe"
+    }
+  }
+}
