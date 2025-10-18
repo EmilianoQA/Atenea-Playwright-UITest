@@ -1,13 +1,15 @@
 {
-  "usuarios_validos": [
+  "casos_exitosos": {
+    "datos_validos": [
     {
       "nombre": "Ana",
       "apellido": "Pérez",
       "email_base": "ana.perez",
       "password": "Atenea123"
     }
-  ],
-  "casos_invalidos": {
+  ]
+  },
+  "casos_fallidos": {
     "password_corta": {
       "nombre": "Test",
       "apellido": "Invalid",

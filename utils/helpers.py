@@ -27,10 +27,10 @@ def validar_respuesta_api_simple(
     try:
         body = response.json()
         assert expected_key in body, \
-            f"La clave de relevancia '{expected_key}' no se encontró en el cuerpo de la respuesta."
+            f"La clave '{expected_key}' no se encontró en el cuerpo de la respuesta."
     except json.JSONDecodeError:
         assert False, "Error: El cuerpo de la respuesta no es un JSON válido."
 
-    print(f"✅ Validación de API simple exitosa.")
+    print(f"✅ Validación de API exitosa.")
     return body
 

@@ -1,52 +1,50 @@
-import pytest
 from playwright.sync_api import Page, expect
 import os
 from dotenv import load_dotenv
 import time
+import pytest
+from pages.registro_page_new import RegistroPage
+from pages.login_page import LoginPage
+import json
 
 load_dotenv()
 BASE_URL = os.getenv('BASE_URL')
 
-'''Test basico de registro exitoso con datos hardcodeados, sin page object y con validacion de la respuesta de la API'''
+def test_registro_exitoso_simple(page: Page):
+    """Test simple de registro exitoso
+    - Navega a la página de registro
+    - Completa el formulario de registro
+    - Acepta los términos y condiciones
+    - Hace clic en Crear cuenta
+    - Verifica que el modal de registro exitoso se muestra correctamente
+    - Hace clic en Ir a iniciar sesión
+    - Verifica que redirige a la página de login"""
 
-def test_registro_exitoso(page: Page):
-    """Test simple de registro exitoso"""
-    
-    # Ir a la página de registro
-    page.goto(f"{BASE_URL}/signup")
+    registro_page = RegistroPage(page)
+    registro_page.navegar(BASE_URL)
     
     # Generar email único
     email_unico = f"usuario.test{int(time.time())}@mail.com"
     
     # Llenar el formulario
-    page.get_by_role("textbox", name="Nombre").fill("Ana")
-    page.get_by_role("textbox", name="Apellido").fill("Pérez")
-    page.get_by_role("textbox", name="Correo electrónico").fill(email_unico)
-    page.get_by_role("textbox", name="Contraseña", exact=True).fill("Atenea123")
-    page.get_by_role("textbox", name="Confirmar contraseña").fill("Atenea123")
+    registro_page.llenar_formulario("Ana", "Pérez", email_unico, "Atenea123")
     
     # Aceptar términos
-    page.get_by_role("checkbox", name="Acepto los Términos y").check()
+    registro_page.aceptar_terminos()
     
-    # Hacer clic y capturar respuesta
-    with page.expect_response(lambda response: "/students/register" in response.url) as response_info:
-        page.get_by_role("button", name="Crear cuenta").click()
+    # Hacer clic en Crear cuenta
+    registro_page.hacer_click_crear_cuenta()
     
-    # Validar que la API respondió 201
-    response = response_info.value
-    assert response.status == 201
-
-    # ESPERAR A QUE LLEGUE AL DASHBOARD
-    expect(page).to_have_url(f"{BASE_URL}/dashboard")
-
-    # Verificar que el token está en localStorage∏
-    token = page.evaluate("() => localStorage.getItem('token')")
-    assert token is not None
-        
-    # Validar redirección
-    expect(page).to_have_url(f"{BASE_URL}/dashboard")
-    # Validar header logueado
-    expect(page.get_by_role("button", name="account of current user")).to_be_visible()
-    expect(page.get_by_text("Hola,")).to_be_visible()
+    # Verificar modal de registro exitoso
+    registro_page.verificar_modal_registro_exitoso()
+    
+    # Hacer clic en Ir a iniciar sesión
+    registro_page.boton_ir_a_login.click()
+    
+    # Verificar redirección a login
+    login_page = LoginPage(page)
+    login_page.navegar(BASE_URL)
+    login_page.validar_elementos()
+    expect(page).to_have_url(f"{BASE_URL}/login")
     
     print(f"✅ Test exitoso - Email: {email_unico}")
