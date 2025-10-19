@@ -1,28 +1,29 @@
 {
-  "casos_exitosos": {
-    "datos_validos": [
+  "casos_exitosos": [
     {
+      "test_id": "datos_validos",
       "nombre": "Ana",
       "apellido": "Pérez",
       "email_base": "ana.perez",
       "password": "Atenea123"
     }
-  ]
-  },
-  "casos_fallidos": {
-    "password_corta": {
+  ],
+  "casos_fallidos": [
+    {
+      "test_id": "password_corta",
       "nombre": "Test",
-      "apellido": "Invalid",
-      "email_base": "test.invalid",
+      "apellido": "Invalido",
+      "email_base": "test.pass.corta",
       "password": "123",
-      "error_esperado": "contraseña"
+      "error_esperado": "La contraseña debe tener al menos 8 caracteres"
     },
-    "email_duplicado": {
+    {
+      "test_id": "email_duplicado",
       "nombre": "Duplicado",
       "apellido": "Email",
-      "email_base": "ana.perez",
-      "password": "Test123456",
-      "error_esperado": "ya existe"
+      "email_base": "usuario.existente",
+      "password": "PasswordValido123",
+      "error_esperado": "El correo electrónico ya está en uso"
     }
-  }
+  ]
 }

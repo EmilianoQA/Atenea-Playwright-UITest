@@ -12,7 +12,9 @@ BASE_URL = os.getenv('BASE_URL')
 
 with open('data/registro.json', 'r', encoding='utf-8') as file:
     datos = json.load(file)
-    datos_validos = datos['casos_exitosos']['datos_validos'][0]
+    datos_validos = datos['casos_exitosos'][0]
+    # se utiliza la lista completa para parametrizar
+    datos_invalidos = datos['casos_fallidos']
     
 def test_registro_exitoso(page: Page):
     """
@@ -37,3 +39,4 @@ def test_registro_exitoso(page: Page):
 
     # Inicio de sesión con las credenciales del nuevo usuario
     login_page.login_usuario(BASE_URL, email_unico, password)
+    
