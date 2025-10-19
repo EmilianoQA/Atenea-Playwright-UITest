@@ -13,17 +13,17 @@
       "test_id": "password_corta",
       "nombre": "Test",
       "apellido": "Invalido",
-      "email_base": "test.pass.corta",
+      "email_base": "test.pass.corta@correo.com",
       "password": "123",
       "error_esperado": "La contraseña debe tener al menos 8 caracteres"
     },
     {
-      "test_id": "email_duplicado",
-      "nombre": "Duplicado",
-      "apellido": "Email",
-      "email_base": "usuario.existente",
+      "test_id": "email_invalido",
+      "nombre": "Test",
+      "apellido": "Invalido",
+      "email_base": "test.email.invalido@correo.con",
       "password": "PasswordValido123",
-      "error_esperado": "El correo electrónico ya está en uso"
+      "error_esperado": "Por favor ingresa un email válido"
     }
   ]
 }

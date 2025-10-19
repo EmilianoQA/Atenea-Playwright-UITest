@@ -69,12 +69,11 @@ class RegistroPage:
         expect(self.input_email_registrado).to_be_visible()
         expect(self.input_password_registrado).to_be_visible()
   
-    def obtener_mensaje_error(self):
-        """Obtiene el mensaje de error del formulario"""
-        error_element = self.page.locator(".error, .alert-danger, [role='alert']")
-        if error_element.is_visible():
-            return error_element.text_content()
-        return "La contraseña debe tener al menos 8 caracteres"
+    def validar_mensaje_error(self, mensaje_esperado: str):
+        """ Verifica que un mensaje de error específico es visible.
+        Busca un elemento que contenga el texto del mensaje esperado."""
+        error_locator = self.page.get_by_text(mensaje_esperado)
+        expect(error_locator).to_be_visible()
     
     def registrar_nuevo_usuario(self, base_url, nombre, apellido, email, password):
         """Flujo completo para registrar un usuario"""

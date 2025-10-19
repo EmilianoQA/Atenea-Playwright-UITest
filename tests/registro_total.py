@@ -39,4 +39,32 @@ def test_registro_exitoso(page: Page):
 
     # Inicio de sesión con las credenciales del nuevo usuario
     login_page.login_usuario(BASE_URL, email_unico, password)
-    
+    print(f"✅ Test exitoso - Email: {email_unico}")
+
+@pytest.mark.parametrize(
+    "caso",
+    datos_invalidos,
+    ids=[d["test_id"] for d in datos_invalidos]  # para que se vea el test_id en el reporte
+)
+def test_registro_negativo(page, caso):
+    """
+    Test parametrizado de casos negativos de registro.
+    - Caso para contraseña corta
+    - Caso para email inválido
+    """
+    registro_page = RegistroPage(page)
+
+    # Intentar registrar usuario
+    registro_page.navegar(BASE_URL)
+    registro_page.llenar_formulario(
+        nombre=caso['nombre'],
+        apellido=caso['apellido'],
+        email=f"{caso['email_base']}.test@correo.com",
+        password=caso['password']
+    )
+    registro_page.aceptar_terminos()
+    registro_page.hacer_click_crear_cuenta()
+
+    # Capturar mensaje de error y validar
+    registro_page.validar_mensaje_error(caso['error_esperado'])
+    print(f"✅ Test negativo exitoso - {caso['test_id']}")
