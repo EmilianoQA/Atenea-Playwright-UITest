@@ -13,12 +13,10 @@ BASE_URL = os.getenv('BASE_URL')
 with open('data/registro.json', 'r', encoding='utf-8') as file:
     datos = json.load(file)
     datos_validos = datos['casos_exitosos'][0]
-    # se utiliza la lista completa para parametrizar
     datos_invalidos = datos['casos_fallidos']
     
 def test_registro_exitoso(page: Page):
-    """
-    Test del flujo completo:
+    """ Test de registro exitoso completo.
     1. Se registra un nuevo usuario.
     2. Se inicia sesión con las credenciales de ese nuevo usuario.
     3. Se valida la respuesta de la API
@@ -41,11 +39,7 @@ def test_registro_exitoso(page: Page):
     login_page.login_usuario(BASE_URL, email_unico, password)
     print(f"✅ Test exitoso - Email: {email_unico}")
 
-@pytest.mark.parametrize(
-    "caso",
-    datos_invalidos,
-    ids=[d["test_id"] for d in datos_invalidos]  # para que se vea el test_id en el reporte
-)
+@pytest.mark.parametrize("caso",datos_invalidos,ids=[d["test_id"] for d in datos_invalidos])
 def test_registro_negativo(page, caso):
     """
     Test parametrizado de casos negativos de registro.
