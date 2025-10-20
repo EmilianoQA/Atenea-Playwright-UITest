@@ -1,4 +1,5 @@
 {
+    // --- CONFIGURACIÓN DE TESTING ---
     "python.testing.pytestArgs": [
         "tests"
     ],
@@ -10,5 +11,18 @@
         "./venv",
         "-p",
         "test_*.py"
-    ]
+    ],
+
+    // --- CONFIGURACIÓN DE CALIDAD DE CÓDIGO ---
+    "python.linting.enabled": true,
+    "python.linting.ruffEnabled": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": true,
+            "source.organizeImports.ruff": true
+        }
+    },
+    "ruff.importStrategy": "fromEnvironment"
 }
