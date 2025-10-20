@@ -5,38 +5,43 @@ import os
 from dotenv import load_dotenv
 import time
 import json
-import random  # <--- Importante
+import random
 from pages.registro_page import RegistroPage
+from pages.login_page import LoginPage
 from utils.helpers import validar_respuesta_api_simple
 
 # Configuración inicial
 load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 
-with open("data/usuarios.json", "r", encoding="utf-8") as file:
+with open("data/registro.json", "r", encoding="utf-8") as file:
     datos = json.load(file)
 
-usuario_valido = datos["usuarios_validos"][0]
+usuario_valido = datos["casos_exitosos"][0]
 
 
 # Test de registro con validación mejorada de API
-def test_registro_exitoso(page: Page):
+def test_registro_exitoso_valida_api(page: Page):
     """
     Test de registro que utiliza una función helper para validar la API
     y comprueba el resultado final en la UI.
     """
+    registro_page = RegistroPage(page)
+    login_page = LoginPage(page)
 
     # Email único
     timestamp = int(time.time())
     random_num = random.randint(1000, 9999)
     email_unico = f"{usuario_valido['email_base']}.test{timestamp}{random_num}@mail.com"
-    registro_page = RegistroPage(page)
+    password = usuario_valido["password"]
+
+    # Registro
     registro_page.navegar(BASE_URL)
     registro_page.llenar_formulario(
         usuario_valido["nombre"],
         usuario_valido["apellido"],
         email_unico,
-        usuario_valido["password"],
+        password,
     )
     registro_page.aceptar_terminos()
     # Acción y captura de respuesta
@@ -49,10 +54,8 @@ def test_registro_exitoso(page: Page):
         expected_status=201,
         expected_key="token",
     )
-    # Validaciones en la UI
-    registro_page.verificar_redireccion_dashboard(BASE_URL)
-    token_en_navegador = registro_page.obtener_token_localstorage()
-    assert (
-        token_en_navegador is not None
-    ), "No se encontró ningún token en el Local Storage"
-    registro_page.verificar_header_logueado()
+
+    # Verificamos los nuevos pasos de la UI post-registro
+    registro_page.verificar_modal_registro_exitoso()
+    registro_page.click_ir_a_login()
+    login_page.login_usuario(BASE_URL, email_unico, password)

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
 
 from pages.login_page import LoginPage
-from pages.registro_page_new import RegistroPage
+from pages.registro_page import RegistroPage
 
 
 load_dotenv()
