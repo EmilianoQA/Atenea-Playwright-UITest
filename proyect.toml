@@ -1,0 +1,24 @@
+# Archivo de configuración central para las herramientas de Python
+
+[tool.black]
+# Configuración para Black, el formateador.
+line-length = 110  # Longitud máxima de línea (un poco más larga es común en tests)
+
+[tool.ruff]
+# Configuración para Ruff, el linter.
+line-length = 110  # Debe ser igual a la de Black para que no se peleen.
+
+# Lista de reglas que Ruff debe revisar.
+# E/W: Errores y advertencias de estilo (PEP 8)
+# F: Errores lógicos (ej. variables no usadas)
+# I: Reglas para ordenar automáticamente las importaciones
+select = ["E", "W", "F", "I"]
+
+# Carpetas que Ruff va a ignorar
+exclude = [
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "venv",
+    "reports"
+]

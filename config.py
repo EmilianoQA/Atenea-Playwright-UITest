@@ -1,1 +1,1 @@
-'''archivo que lee las variables de entorno'''
+"""archivo que lee las variables de entorno"""

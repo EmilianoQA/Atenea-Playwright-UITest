@@ -1,24 +1,23 @@
-import pytest
 from playwright.sync_api import Page, expect
 import os
-from dotenv import load_dotenv      
-import time
+from dotenv import load_dotenv
 
 load_dotenv()
-BASE_URL = os.getenv('BASE_URL')
+BASE_URL = os.getenv("BASE_URL")
 
-'''Test simple de login exitoso con datos hardcodeados, sin page object y con validacion de la respuesta de la API'''
+"""Test simple de login exitoso con datos hardcodeados, sin page object y con validacion de la respuesta de la API"""
+
 
 def test_login_exitoso(page: Page):
     """Test simple de login exitoso"""
-    
+
     # Ir a la página de login
     page.goto(f"{BASE_URL}/login")
 
     # Validar que está en la página de login
     expect(page).to_have_url(f"{BASE_URL}/login")
 
-    #Validar el header    
+    # Validar el header
     expect(page.get_by_role("heading", name="Acceso de Estudiantes")).to_be_visible()
 
     # Validar que los elementos del formulario están visibles
@@ -29,10 +28,12 @@ def test_login_exitoso(page: Page):
     # Llenar el formulario
     page.get_by_role("textbox", name="Correo Electrónico").fill("usuariouno@mail.com")
     page.get_by_role("textbox", name="Contraseña").fill("usuario1")
-    #page.get_by_role("button", name="Ingresar").click()
+    # page.get_by_role("button", name="Ingresar").click()
 
     # hacer clic y capturar respuesta
-    with page.expect_response(lambda response: "/students/login" in response.url) as response_info:
+    with page.expect_response(
+        lambda response: "/students/login" in response.url
+    ) as response_info:
         page.get_by_role("button", name="Ingresar").click()
 
     # Validar que la API respondió 200
