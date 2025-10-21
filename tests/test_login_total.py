@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import json
 from pages.login_page import LoginPage
 from pages.dashboard_page import DashboardPage
+import pytest
 
 load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
@@ -21,6 +22,8 @@ with open("data/login.json", "r", encoding="utf-8") as file:
     datos_pass_invalida = datos["login_invalidos"]["contraseña_invalida"]
 
 
+@pytest.mark.login
+@pytest.mark.smoke
 def test_login_exitoso(page: Page):
     """Test de login exitoso usando login_page y dashboard_page y datos de entorno."""
     login_page = LoginPage(page)
@@ -29,6 +32,9 @@ def test_login_exitoso(page: Page):
     dashboard_page.verificar_elementos_dashboard()
 
 
+@pytest.mark.login
+@pytest.mark.negative
+@pytest.mark.smoke
 def test_login_email_invalido(page: Page):
     """Test de login fallido con email inválido usando datos del JSON."""
     login_page = LoginPage(page)
@@ -41,6 +47,9 @@ def test_login_email_invalido(page: Page):
     expect(page).to_have_url(f"{BASE_URL}/login")
 
 
+@pytest.mark.login
+@pytest.mark.negative
+@pytest.mark.smoke
 def test_login_password_invalida(page: Page):
     """Test de login fallido con contraseña inválida usando datos del JSON."""
     login_page = LoginPage(page)

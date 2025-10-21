@@ -1,6 +1,7 @@
 from playwright.sync_api import Page, expect
 import os
 from dotenv import load_dotenv
+import pytest
 
 load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
@@ -8,6 +9,7 @@ BASE_URL = os.getenv("BASE_URL")
 """Test simple de login exitoso con datos hardcodeados, sin page object y con validacion de la respuesta de la API"""
 
 
+@pytest.mark.login
 def test_login_exitoso(page: Page):
     """Test simple de login exitoso"""
 

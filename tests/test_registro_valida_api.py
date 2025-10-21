@@ -9,6 +9,7 @@ import random
 from pages.registro_page import RegistroPage
 from pages.login_page import LoginPage
 from utils.helpers import validar_respuesta_api_simple
+import pytest
 
 # Configuración inicial
 load_dotenv()
@@ -21,6 +22,7 @@ usuario_valido = datos["casos_exitosos"][0]
 
 
 # Test de registro con validación mejorada de API
+@pytest.mark.registro
 def test_registro_exitoso_valida_api(page: Page):
     """
     Test de registro que utiliza una función helper para validar la API

@@ -1,11 +1,9 @@
 import json
 import os
 import time
-
 import pytest
 from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
-
 from pages.login_page import LoginPage
 from pages.registro_page import RegistroPage
 
@@ -20,6 +18,8 @@ with open("data/registro.json", "r", encoding="utf-8") as file:
     datos_invalidos = datos["casos_fallidos"]
 
 
+@pytest.mark.registro
+@pytest.mark.smoke
 def test_registro_exitoso(page: Page):
     """Test de registro exitoso completo.
     1. Se registra un nuevo usuario.
@@ -50,6 +50,9 @@ def test_registro_exitoso(page: Page):
 @pytest.mark.parametrize(
     "caso", datos_invalidos, ids=[d["test_id"] for d in datos_invalidos]
 )
+@pytest.mark.registro
+@pytest.mark.negative
+@pytest.mark.smoke
 def test_registro_negativo(page, caso):
     """
     Test parametrizado de casos negativos de registro.
