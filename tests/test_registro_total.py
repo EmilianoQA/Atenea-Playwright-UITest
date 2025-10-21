@@ -47,12 +47,12 @@ def test_registro_exitoso(page: Page):
     print(f"✅ Test exitoso - Email: {email_unico}")
 
 
-@pytest.mark.parametrize(
-    "caso", datos_invalidos, ids=[d["test_id"] for d in datos_invalidos]
-)
 @pytest.mark.registro
 @pytest.mark.negative
 @pytest.mark.smoke
+@pytest.mark.parametrize(
+    "caso", datos_invalidos, ids=[d["test_id"] for d in datos_invalidos]
+)
 def test_registro_negativo(page, caso):
     """
     Test parametrizado de casos negativos de registro.
