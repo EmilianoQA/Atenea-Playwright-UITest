@@ -1,1 +1,0 @@
-✅ Test negativo exitoso - password_corta

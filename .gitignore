@@ -8,3 +8,7 @@ test-results/
 *.webm
 screenshots/
 instructivo.md
+
+/allure-results/
+/test-results/
+*.html

@@ -1,2 +1,0 @@
-Validando API: Método='POST', Status='201', Clave='token'
-✅ Validación de API exitosa.
