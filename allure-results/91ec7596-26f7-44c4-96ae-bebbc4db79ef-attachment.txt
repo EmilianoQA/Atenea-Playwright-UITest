@@ -1,0 +1,1 @@
+✅ Test negativo exitoso - email_invalido

@@ -1,6 +1,10 @@
 # ==============================================================================
-# Makefile Final para el Framework de Automatización Atenea
+# Makefile con Doble Sistema de Reportes (Allure y Playwright Trace)
 # ==============================================================================
+
+# Directorios de resultados
+ALLURE_DIR = allure-results
+PLAYWRIGHT_DIR = test-results
 
 # --- INSTALACIÓN ---
 install:
@@ -8,43 +12,29 @@ install:
 	playwright install
 
 # --- EJECUCIÓN DE TESTS ---
-# Gracias a 'pytest.ini', todos estos comandos generan los archivos de traza (.zip) en la carpeta 'traces/'.
+# Todos los tests ahora generan resultados para AMBOS sistemas de reporte.
+# '--output' es para Playwright, '--alluredir' es para Allure.
 
 test:
-	pytest
+	pytest --output=$(PLAYWRIGHT_DIR) --alluredir=$(ALLURE_DIR) --clean-alluredir
 
 test-headed:
-	pytest --headed
+	pytest --headed --output=$(PLAYWRIGHT_DIR) --alluredir=$(ALLURE_DIR) --clean-alluredir
 
 smoke:
-	pytest -m smoke
+	pytest -m smoke --output=$(PLAYWRIGHT_DIR) --alluredir=$(ALLURE_DIR) --clean-alluredir
 
 # --- VISUALIZACIÓN DE REPORTES ---
-trace:
-	@last_trace=$$(find test-results -name "trace.zip" | sort | tail -1); \
-	if [ -n "$$last_trace" ]; then \
-		echo "🔍 Abriendo trace: $$last_trace"; \
-		playwright show-trace $$last_trace; \
-	else \
-		echo "❌ No se encontró ningún trace.zip en test-results/"; \
-	fi
+# Comandos separados para ver cada tipo de reporte.
 
-# --- CALIDAD DE CÓDIGO ---
-format:
-	black .
+# Comando: make report-allure
+# Lee los resultados de 'allure-results' y abre el reporte de Allure.
+report-allure:
+	allure serve $(ALLURE_DIR)
 
-lint:
-	ruff check . --fix
+# Comando: make report-trace
+# Lee los resultados de 'test-results' y abre el último Trace de Playwright.
+report-trace:
+	ls -t $(PLAYWRIGHT_DIR)/*/trace.zip | head -n 1 | xargs playwright show-trace
 
-# --- AYUDA ---
-help:
-	@echo "--- Comandos Disponibles ---"
-	@echo "make install       -> Instala dependencias y navegadores."
-	@echo "make test          -> Ejecuta todos los tests (y genera trazas)."
-	@echo "make test-headed   -> Ejecuta todos los tests con UI (y genera trazas)."
-	@echo "make smoke         -> Ejecuta solo los smoke tests (y genera trazas)."
-	@echo "make report        -> MUESTRA el último reporte de traza de Playwright."
-	@echo "make format        -> Formatea el código con Black."
-	@echo "make lint          -> Limpia el código con Ruff."
-
-.PHONY: install test test-headed smoke report format lint help
+# ... (El resto de tus comandos: format, lint, help, etc.)
