@@ -1,0 +1,28 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Sat Oct 25 18:59:35 UTC 2025","Sat Oct 25 18:59:37 UTC 2025","2222","tests","test_registro_total","","","","test_registro_negativo[chromium-email_invalido]","
+    Test parametrizado de casos negativos de registro.
+    - Caso para contraseña corta
+    - Caso para email inválido
+    "
+"passed","Sat Oct 25 18:59:32 UTC 2025","Sat Oct 25 18:59:34 UTC 2025","2123","tests","test_registro_total","","","","test_registro_negativo[chromium-password_corta]","
+    Test parametrizado de casos negativos de registro.
+    - Caso para contraseña corta
+    - Caso para email inválido
+    "
+"passed","Sat Oct 25 18:59:05 UTC 2025","Sat Oct 25 18:59:08 UTC 2025","2957","tests","test_login_optimizado","","","","test_login_exitoso[chromium]","Test de login exitoso."
+"passed","Sat Oct 25 18:58:57 UTC 2025","Sat Oct 25 18:59:01 UTC 2025","3779","tests","test_login_basico","","","","test_login_exitoso[chromium]","Test simple de login exitoso"
+"failed","Sat Oct 25 18:59:13 UTC 2025","Sat Oct 25 18:59:21 UTC 2025","8762","tests","test_login_total","","","","test_login_exitoso[chromium]","Test de login exitoso usando login_page y dashboard_page y datos de entorno."
+"passed","Sat Oct 25 18:59:24 UTC 2025","Sat Oct 25 18:59:27 UTC 2025","2838","tests","test_login_total","","","","test_login_password_invalida[chromium]","Test de login fallido con contraseña inválida usando datos del JSON."
+"passed","Sat Oct 25 18:59:37 UTC 2025","Sat Oct 25 18:59:42 UTC 2025","4745","tests","test_registro_valida_api","","","","test_registro_exitoso_valida_api[chromium]","
+    Test de registro que utiliza una función helper para validar la API
+    y comprueba el resultado final en la UI.
+    "
+"passed","Sat Oct 25 18:59:01 UTC 2025","Sat Oct 25 18:59:05 UTC 2025","3216","tests","test_login_mejorado","","","","test_login_exitoso[chromium]","Login exitoso usando page object model"
+"passed","Sat Oct 25 18:59:22 UTC 2025","Sat Oct 25 18:59:24 UTC 2025","1956","tests","test_login_total","","","","test_login_email_invalido[chromium]","Test de login fallido con email inválido usando datos del JSON."
+"passed","Sat Oct 25 18:59:08 UTC 2025","Sat Oct 25 18:59:10 UTC 2025","1961","tests","test_login_optimizado","","","","test_login_email_invalido[chromium]","Test de login fallido con email inválido."
+"passed","Sat Oct 25 18:59:27 UTC 2025","Sat Oct 25 18:59:32 UTC 2025","4746","tests","test_registro_total","","","","test_registro_exitoso[chromium]","Test de registro exitoso completo.
+    1. Se registra un nuevo usuario.
+    2. Se inicia sesión con las credenciales de ese nuevo usuario.
+    3. Se valida la respuesta de la API
+    "
+"passed","Sat Oct 25 18:59:10 UTC 2025","Sat Oct 25 18:59:12 UTC 2025","2287","tests","test_login_optimizado","","","","test_login_password_invalida[chromium]","Test de login fallido con contraseña inválida."
