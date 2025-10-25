@@ -81,7 +81,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK ---
+  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK (VERSIÓN SIMPLE Y DIRECTA) ---
   notify:
     name: Enviar Notificación a Slack
     needs: [test, deploy]
@@ -92,17 +92,12 @@ jobs:
       - name: Enviar notificación a Slack
         uses: 8398a7/action-slack@v3
         with:
-          # Usamos el estado del primer job (test) para el color del mensaje
+          # El estado del mensaje (success, failure, cancelled)
           status: ${{ needs.test.outputs.status }}
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          text: 'Reporte de Pruebas de Atenea'
+          # Un texto simple que incluye la URL del reporte
+          text: |
+            Ejecución de tests finalizada con estado: ${{ needs.test.outputs.status }}
+            Ver reporte en: ${{ needs.deploy.outputs.page_url }}
         env:
-          # Le pasamos la URL del reporte que se generó en el job 'deploy'
-          SLACK_JOB_STATUS: ${{ needs.test.outputs.status }}
+          # La forma correcta de pasar la URL del webhook
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_SHA: ${{ github.sha }}
-          # Usamos la URL generada por el paso de despliegue
-          ALLURE_REPORT_URL: ${{ needs.deploy.outputs.page_url }}
