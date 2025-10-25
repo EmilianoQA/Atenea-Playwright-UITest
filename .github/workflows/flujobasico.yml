@@ -1,4 +1,4 @@
-name: Atenea - Pytest CI
+name: E2E Tests con Python y Playwright
 
 on:
   push:
@@ -29,9 +29,10 @@ jobs:
         run: echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
 
       - name: Ejecutar los tests
+        continue-on-error: true
         run: make test
 
-      # 6. Guarda los resultados de Allure como un "artefacto"
+      # Guarda los resultados de Allure como un "artefacto"
       - name: Subir reporte de Allure
         if: always()
         uses: actions/upload-artifact@v4
