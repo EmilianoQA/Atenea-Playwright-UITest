@@ -81,7 +81,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Ejecución de Pruebas de Atenea Finalizada.\nStatus: ${{ needs.test.outputs.status == 'success' && 'Éxito' || 'Fallo' }}\nVer reporte en: ${{ needs.deploy.outputs.report_url }}"
+              "text": "Ejecución de Pruebas de Atenea Finalizada.\nVer reporte en: ${{ needs.deploy.outputs.report_url }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
