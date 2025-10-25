@@ -1,18 +1,20 @@
-name: E2E Tests con Python y Playwright
+name: Ejecutar Pruebas y Publicar Reporte
 
 on:
   push:
     branches: [ main ]
-
   workflow_dispatch:
 
-# Trabajos a ejecutar
+# Permisos: para poder subir el reporte a GitHub Pages
+permissions:
+  contents: write
+
+
 jobs:
+  # Ejecutar los tests
   run-tests:
     runs-on: ubuntu-latest
-
     steps:
-
       - name: Descargar el código del repositorio
         uses: actions/checkout@v4
 
@@ -28,14 +30,43 @@ jobs:
       - name: Crear archivo .env
         run: echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
 
-      - name: Ejecutar los tests
+      - name: Ejecutar los tests # y continuar aunque fallen
         continue-on-error: true
         run: make test
 
-      # Guarda los resultados de Allure como un "artefacto"
-      - name: Subir reporte de Allure
-        if: always()
+      - name: Subir artefacto con los resultados de Allure
+        # Guardamos los resultados
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
-          path: allure-results/
+          name: allure-results
+          path: allure-results
+          # Guardamos el artefacto solo por 1 día
+          retention-days: 1
+
+  # Construir y desplegar el reporte de Allure
+  deploy-report:
+    needs: run-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el artefacto con los resultados
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name: Instalar Allure
+        run: |
+          sudo wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          sudo tar -zxvf allure-2.27.0.tgz -C /opt/
+          sudo ln -s /opt/allure-2.27.0/bin/allure /usr/bin/allure
+          allure --version
+
+      - name: Generar el reporte HTML
+        run: allure generate allure-results --clean -o allure-report
+
+      - name: Desplegar reporte a GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
