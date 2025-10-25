@@ -1,4 +1,4 @@
-# Nombre del workflow maestro
+# Nombre del workflow
 name: CI de Pruebas de Atenea
 
 on:
@@ -6,7 +6,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# Permisos necesarios para el despliegue y notificación
+# Permisos
 permissions:
   contents: read
   pages: write
@@ -17,35 +17,25 @@ jobs:
   test:
     name: Ejecutar Tests
     runs-on: ubuntu-latest
-    # Hacemos que el resultado del job (success/failure) esté disponible para otros jobs
     outputs:
       status: ${{ job.status }}
-
     steps:
-      - name: Descargar código
-        uses: actions/checkout@v4
-      - name: Configurar Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      - name: Instalar dependencias
-        run: make install
-      - name: Crear archivo .env
-        run: echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
-      - name: Ejecutar los tests
-        id: test-step # Le damos un ID al paso para poder leer su resultado
+      - run: make install
+      - run: echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
+      - id: test-step
         continue-on-error: true
         run: make test
-      - name: Guardar resultados de Allure
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results
           retention-days: 1
-      # Este paso determina si los tests fallaron (outcome == 'failure')
-      - name: Compartir resultado de los tests
-        if: always()
+      - if: always()
         run: echo "TEST_OUTCOME=${{ steps.test-step.outcome }}" >> $GITHUB_ENV
 
   # --- TRABAJO 2: DESPLEGAR EL REPORTE ---
@@ -54,34 +44,31 @@ jobs:
     needs: test
     if: always()
     runs-on: ubuntu-latest
+    # --- LA CLAVE ESTÁ AQUÍ ---
+    # Exportamos la URL para que otros trabajos la puedan usar
+    outputs:
+      report_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      - name: Instalar Allure
-        run: |
+      - run: |
           sudo wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
           sudo tar -zxvf allure-2.27.0.tgz -C /opt/
           sudo ln -s /opt/allure-2.27.0/bin/allure /usr/bin/allure
-      - name: Descargar resultados
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: allure-results
           path: allure-results
-      - name: Generar reporte HTML
-        run: allure generate allure-results --clean -o allure-report
-      - name: Preparar GitHub Pages
-        uses: actions/configure-pages@v4
-      - name: Subir artefacto de la página
-        uses: actions/upload-pages-artifact@v3
+      - run: allure generate allure-results --clean -o allure-report
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./allure-report
-      - name: Desplegar a GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
 
-  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK (VERSIÓN MÍNIMA) ---
+  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK ---
   notify:
     name: Enviar Notificación a Slack
     needs: [test, deploy]
@@ -92,10 +79,9 @@ jobs:
       - name: Enviar notificación a Slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          # Usamos un 'payload' muy simple, solo con la propiedad 'text'
           payload: |
             {
-              "text": "Ejecución de Pruebas de Atenea Finalizada.\nStatus: ${{ needs.test.outputs.status == 'success' && 'Éxito' || 'Fallo' }}\nVer reporte en: ${{ needs.deploy.outputs.page_url }}"
+              "text": "Ejecución de Pruebas de Atenea Finalizada.\nStatus: ${{ needs.test.outputs.status == 'success' && 'Éxito' || 'Fallo' }}\nVer reporte en: ${{ needs.deploy.outputs.report_url }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
