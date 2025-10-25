@@ -81,7 +81,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK (VERSIÓN SIMPLE Y DIRECTA) ---
+  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK (USANDO LA ACCIÓN OFICIAL) ---
   notify:
     name: Enviar Notificación a Slack
     needs: [test, deploy]
@@ -90,14 +90,37 @@ jobs:
 
     steps:
       - name: Enviar notificación a Slack
-        uses: 8398a7/action-slack@v3
+        uses: slackapi/slack-github-action@v1.26.0
         with:
-          # El estado del mensaje (success, failure, cancelled)
-          status: ${{ needs.test.outputs.status }}
-          # Un texto simple que incluye la URL del reporte
-          text: |
-            Ejecución de tests finalizada con estado: ${{ needs.test.outputs.status }}
-            Ver reporte en: ${{ needs.deploy.outputs.page_url }}
+          # El 'payload' nos permite construir el mensaje usando la sintaxis de Slack
+          payload: |
+            {
+              "text": "Ejecución de Pruebas de Atenea Finalizada. Status: ${{ needs.test.outputs.status == 'success' && 'Éxito' || 'Fallo' }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "✅ *Ejecución de Pruebas de Atenea Finalizada*\n*Status:* `${{ needs.test.outputs.status == 'success' && 'Éxito' || 'Fallo' }}`"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "Ver Reporte de Allure",
+                        "emoji": true
+                      },
+                      "style": "primary",
+                      "url": "${{ needs.deploy.outputs.page_url }}"
+                    }
+                  ]
+                }
+              ]
+            }
         env:
-          # La forma correcta de pasar la URL del webhook
+          # Esta acción oficial sí espera la URL del webhook en esta variable de entorno
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
