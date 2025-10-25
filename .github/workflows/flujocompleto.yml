@@ -1,0 +1,108 @@
+# Nombre del workflow maestro
+name: CI de Pruebas de Atenea
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Permisos necesarios para el despliegue y notificación
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # --- TRABAJO 1: EJECUTAR LOS TESTS ---
+  test:
+    name: Ejecutar Tests
+    runs-on: ubuntu-latest
+    # Hacemos que el resultado del job (success/failure) esté disponible para otros jobs
+    outputs:
+      status: ${{ job.status }}
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Instalar dependencias
+        run: make install
+      - name: Crear archivo .env
+        run: echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
+      - name: Ejecutar los tests
+        id: test-step # Le damos un ID al paso para poder leer su resultado
+        continue-on-error: true
+        run: make test
+      - name: Guardar resultados de Allure
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+          retention-days: 1
+      # Este paso determina si los tests fallaron (outcome == 'failure')
+      - name: Compartir resultado de los tests
+        if: always()
+        run: echo "TEST_OUTCOME=${{ steps.test-step.outcome }}" >> $GITHUB_ENV
+
+  # --- TRABAJO 2: DESPLEGAR EL REPORTE ---
+  deploy:
+    name: Desplegar Reporte a GitHub Pages
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Instalar Allure
+        run: |
+          sudo wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          sudo tar -zxvf allure-2.27.0.tgz -C /opt/
+          sudo ln -s /opt/allure-2.27.0/bin/allure /usr/bin/allure
+      - name: Descargar resultados
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+      - name: Generar reporte HTML
+        run: allure generate allure-results --clean -o allure-report
+      - name: Preparar GitHub Pages
+        uses: actions/configure-pages@v4
+      - name: Subir artefacto de la página
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./allure-report
+      - name: Desplegar a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK ---
+  notify:
+    name: Enviar Notificación a Slack
+    needs: [test, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Enviar notificación a Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          # Usamos el estado del primer job (test) para el color del mensaje
+          status: ${{ needs.test.outputs.status }}
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          text: 'Reporte de Pruebas de Atenea'
+        env:
+          # Le pasamos la URL del reporte que se generó en el job 'deploy'
+          SLACK_JOB_STATUS: ${{ needs.test.outputs.status }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_SHA: ${{ github.sha }}
+          # Usamos la URL generada por el paso de despliegue
+          ALLURE_REPORT_URL: ${{ needs.deploy.outputs.page_url }}
