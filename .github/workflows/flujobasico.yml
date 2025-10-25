@@ -5,68 +5,69 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# Permisos: para poder subir el reporte a GitHub Pages
+# Permisos: Le damos permisos explícitos para el despliegue
 permissions:
-  contents: write
-
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  # Ejecutar los tests
+  # --- EJECUTAR LOS TESTS ---
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Descargar el código del repositorio
+      - name: Descargar el código
         uses: actions/checkout@v4
-
-      - name: Configurar Python 3.11
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Instalar dependencias
         run: make install
-
       - name: Crear archivo .env
         run: echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
-
-      - name: Ejecutar los tests # y continuar aunque fallen
+      - name: Ejecutar los tests
         continue-on-error: true
         run: make test
-
-      - name: Subir artefacto con los resultados de Allure
-        # Guardamos los resultados
+      - name: Guardar resultados de Allure
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results
-          # Guardamos el artefacto solo por 1 día
           retention-days: 1
 
-  # Construir y desplegar el reporte de Allure
+  # --- DESPLEGAR EL REPORTE ---
   deploy-report:
     needs: run-tests
+    if: always()
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Descargar el artefacto con los resultados
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-results
-          path: allure-results
+    # Definimos la URL de salida
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
+    steps:
       - name: Instalar Allure
         run: |
           sudo wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
           sudo tar -zxvf allure-2.27.0.tgz -C /opt/
           sudo ln -s /opt/allure-2.27.0/bin/allure /usr/bin/allure
-          allure --version
-
-      - name: Generar el reporte HTML
+      - name: Descargar resultados de los tests
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+      - name: Generar reporte HTML
         run: allure generate allure-results --clean -o allure-report
 
-      - name: Desplegar reporte a GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Preparar GitHub Pages
+        uses: actions/configure-pages@v4
+      - name: Subir artefacto de la página
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
+          path: ./allure-report
+      - name: Desplegar a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
