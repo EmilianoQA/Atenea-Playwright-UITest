@@ -6,7 +6,7 @@ import pytest
 load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 
-"""Test simple de login exitoso con datos hardcodeados, sin page object y con validacion de la respuesta de la API"""
+""" Test simple de login exitoso con datos hardcodeados """
 
 
 @pytest.mark.login
