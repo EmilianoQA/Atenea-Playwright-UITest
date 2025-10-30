@@ -1,8 +1,6 @@
 # Archivo: tests/test_registro_validAPI.py
 
 from playwright.sync_api import Page
-import os
-from dotenv import load_dotenv
 import time
 import json
 import random
@@ -10,10 +8,8 @@ from pages.registro_page import RegistroPage
 from pages.login_page import LoginPage
 from utils.helpers import validar_respuesta_api_simple
 import pytest
+from config import BASE_URL
 
-# Configuración inicial
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
 
 with open("data/registro.json", "r", encoding="utf-8") as file:
     datos = json.load(file)

@@ -1,13 +1,10 @@
 from playwright.sync_api import Page, expect
-import os
-from dotenv import load_dotenv
 import json
 from pages.login_page import LoginPage
 from pages.dashboard_page import DashboardPage
 import pytest
+from config import BASE_URL
 
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
 
 """ Test total de login usando page object model con metodos principales,  datos de entorno y validaciones de API
     - test login exitoso

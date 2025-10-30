@@ -1,11 +1,7 @@
 from playwright.sync_api import Page
-import os
-from dotenv import load_dotenv
 from pages.login_page import LoginPage
 import pytest
-
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
+from config import BASE_URL
 
 """ Test mejorado de login exitoso usando page object model y validando la respuesta de la API"""
 

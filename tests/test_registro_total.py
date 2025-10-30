@@ -1,15 +1,11 @@
 import json
-import os
 import time
 import pytest
-from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
 from pages.login_page import LoginPage
 from pages.registro_page import RegistroPage
+from config import BASE_URL
 
-
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
 
 with open("data/registro.json", "r", encoding="utf-8") as file:
 

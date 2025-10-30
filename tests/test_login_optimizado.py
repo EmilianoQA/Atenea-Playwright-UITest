@@ -1,13 +1,8 @@
 from playwright.sync_api import Page, expect
-import os
-from dotenv import load_dotenv
 import json
 from pages.login_page import LoginPage
 import pytest
-
-# Carga de variables de entorno
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
+from config import BASE_URL
 
 """Test optimizado para login usando page object y datos de entorno
     - test login exitoso

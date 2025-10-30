@@ -1,10 +1,6 @@
 from playwright.sync_api import Page, expect
-import os
-from dotenv import load_dotenv
 import pytest
-
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
+from config import BASE_URL
 
 """ Test simple de login exitoso con datos hardcodeados """
 
