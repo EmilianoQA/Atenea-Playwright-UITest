@@ -1,4 +1,17 @@
+import os
+
+import allure
 import pytest
+
+
+@pytest.fixture(scope="session", autouse=True)
+def limpiar_screenshots():
+    folder = "screenshots"
+    if os.path.exists(folder):
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -10,3 +23,13 @@ def pytest_runtest_makereport(item, call):
         if page:
             # Guarda la captura en la carpeta screenshots con el nombre del test
             page.screenshot(path=f"screenshots/{item.name}_fallo.png")
+            screenshot_path = f"screenshots/{item.name}_fallo.png"
+            page.screenshot(path=screenshot_path)
+            # Adjuntar la imagen al reporte de Allure
+            if os.path.exists(screenshot_path):
+                with open(screenshot_path, "rb") as image:
+                    allure.attach(
+                        image.read(),
+                        name="screenshot",
+                        attachment_type=allure.attachment_type.PNG,
+                    )
