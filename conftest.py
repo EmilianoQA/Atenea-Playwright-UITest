@@ -1,7 +1,11 @@
 import os
-
+import shutil
 import allure
 import pytest
+
+# Archivo para las configuraciones y fixtures globales de pytest
+
+""" limpieza de screenshots antes de la sesión de tests"""
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -12,6 +16,24 @@ def limpiar_screenshots():
             file_path = os.path.join(folder, filename)
             if os.path.isfile(file_path):
                 os.remove(file_path)
+
+
+""" limpieza de resultados de Allure antes de la sesión de tests"""
+
+
+@pytest.fixture(scope="session", autouse=True)
+def limpiar_allure_results():
+    folder = "allure-results"
+    if os.path.exists(folder):
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+
+
+""" captura de screenshots al fallar un test y adjuntar al reporte de Allure"""
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)

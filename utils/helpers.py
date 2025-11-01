@@ -6,10 +6,7 @@ def validar_respuesta_api_simple(
     response: Response, expected_method: str, expected_status: int, expected_key: str
 ):
     """
-    Realiza las 3 validaciones de API más importantes y directas:
-    1. El método HTTP de la petición.
-    2. El código de estado de la respuesta.
-    3. La existencia de una clave principal en el cuerpo JSON.
+    Realiza las 3 validaciones de API más importantes y directas
     """
     print(
         f"Validando API: Método='{expected_method}', Status='{expected_status}', Clave='{expected_key}'"

@@ -15,6 +15,7 @@ class LoginPage:
         self.saludo_usuario = page.get_by_text("Hola,")
         self.error_message_locator = page.locator(".MuiAlert-message.css-1xsto0d")
 
+    # Funciones
     def navegar(self, base_url):
         """Navega a la página de login"""
         self.page.goto(f"{base_url}/login")

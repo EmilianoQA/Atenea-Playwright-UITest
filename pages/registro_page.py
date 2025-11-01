@@ -11,7 +11,6 @@ class RegistroPage:
         self.page = page
 
         # Selectores
-        # Campos del formulario
         self.input_nombre = page.get_by_role("textbox", name="Nombre")
         self.input_apellido = page.get_by_role("textbox", name="Apellido")
         self.input_email = page.get_by_role("textbox", name="Correo electrónico")
@@ -28,7 +27,6 @@ class RegistroPage:
         )
         self.mensaje_cuenta_creada = page.get_by_text("La cuenta se creó")
         self.mensaje_ahora_puedes = page.get_by_text("Ahora puedes iniciar sesión")
-        # self.mensaje_recuerda = page.get_by_text(re.compile(r"Recuerda usar .*@mail.com para iniciar sesión"))
         self.boton_ir_a_login = page.get_by_role("button", name="Ir a iniciar sesión")
         # Elementos de la pagina de login
         self.acceso_estudiantes_heading = page.get_by_role(
@@ -39,8 +37,7 @@ class RegistroPage:
         )
         self.input_password_registrado = page.get_by_role("textbox", name="Contraseña")
 
-    # Metodos
-
+    # Funciones
     def navegar(self, base_url):
         """Navega a la página de registro"""
         self.page.goto(f"{base_url}/signup")

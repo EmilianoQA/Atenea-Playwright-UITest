@@ -9,7 +9,8 @@ PLAYWRIGHT_DIR = test-results
 # --- INSTALACIÓN ---
 install:
 	pip install -r requirements.txt
-	playwright install
+	playwright install --with-deps chromium
+
 
 # --- EJECUCIÓN DE TESTS ---
 # Todos los tests ahora generan resultados para AMBOS sistemas de reporte.
@@ -22,7 +23,7 @@ test-headed:
 	pytest --headed --output=$(PLAYWRIGHT_DIR) --alluredir=$(ALLURE_DIR) --clean-alluredir
 
 smoke:
-	pytest -m smoke --output=$(PLAYWRIGHT_DIR) --alluredir=$(ALLURE_DIR) --clean-alluredir
+	pytest -vv -m smoke --output=$(PLAYWRIGHT_DIR) --alluredir=$(ALLURE_DIR) --clean-alluredir
 
 # --- VISUALIZACIÓN DE REPORTES ---
 # Comandos separados para ver cada tipo de reporte.

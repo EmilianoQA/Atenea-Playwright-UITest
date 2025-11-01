@@ -1,19 +1,23 @@
-# Nombre del workflow
-name: CI de Pruebas de Atenea
+
+name: Atenea - Tests
 
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
-# Permisos
+
 permissions:
   contents: read
   pages: write
   id-token: write
 
+concurrency:
+  group: atenea-tests
+  cancel-in-progress: true
+
 jobs:
-  # --- TRABAJO 1: EJECUTAR LOS TESTS ---
+
   test:
     name: Ejecutar Tests
     runs-on: ubuntu-latest
@@ -38,14 +42,13 @@ jobs:
       - if: always()
         run: echo "TEST_OUTCOME=${{ steps.test-step.outcome }}" >> $GITHUB_ENV
 
-  # --- TRABAJO 2: DESPLEGAR EL REPORTE ---
+
   deploy:
     name: Desplegar Reporte a GitHub Pages
     needs: test
     if: always()
     runs-on: ubuntu-latest
-    # --- LA CLAVE ESTÁ AQUÍ ---
-    # Exportamos la URL para que otros trabajos la puedan usar
+
     outputs:
       report_url: ${{ steps.deployment.outputs.page_url }}
     environment:
@@ -68,7 +71,7 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
 
-  # --- TRABAJO 3: ENVIAR NOTIFICACIÓN A SLACK ---
+
   notify:
     name: Enviar Notificación a Slack
     needs: [test, deploy]

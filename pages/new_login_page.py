@@ -1,14 +1,17 @@
 from playwright.sync_api import Page, expect
-from pages.base_page import BasePage  # <-- Se importa la clase base
+from pages.base_page import BasePage
 
 
-class LoginPage(BasePage):  # <-- Se indica que hereda
+# Nueva clase LoginPage que hereda de BasePage
+
+
+class LoginPage(BasePage):
     """Page Object para la página de login"""
 
     def __init__(self, page: Page):
-        super().__init__(page)  # <-- Se inicializa el "padre"
+        super().__init__(page)
 
-        # --- SELECTORES (Estos son ÚNICOS de LoginPage) ---
+        # Selectores
         self.email = page.get_by_role("textbox", name="Correo Electrónico")
         self.password = page.get_by_role("textbox", name="Contraseña")
         self.boton_ingresar = page.get_by_role("button", name="Ingresar")
@@ -68,13 +71,13 @@ class LoginPage(BasePage):  # <-- Se indica que hereda
     def login_usuario(self, base_url, email, password):
         """Flujo completo para loguear un usuario"""
         self.navegar(base_url)
-        self.validar_url(f"{base_url}/login")  # <-- Ahora llama al método heredado
+        self.validar_url(f"{base_url}/login")  # llama al método heredado
         self.validar_header()
         self.validar_elementos()
         self.llenar_formulario(email, password)
         response = self.capturar_respuesta_y_click(lambda r: "/students/login" in r.url)
         self.validar_respuesta_api(response, 200)
         self.verificar_redireccion_dashboard(base_url)
-        token = self.obtener_token_localstorage()  # <-- Ahora llama al método heredado
+        token = self.obtener_token_localstorage()  # Llama al método heredado
         assert token is not None
         self.verificar_header_logueado()

@@ -27,5 +27,4 @@ class BasePage:
         El nombre del archivo incluirá un timestamp para hacerlo único.
         """
         timestamp = time.strftime("%Y%m%d-%H%M%S")
-        # Las capturas se guardarán en una carpeta 'screenshots/' (se creará si no existe)
         self.page.screenshot(path=f"screenshots/{nombre_archivo}_{timestamp}.png")
